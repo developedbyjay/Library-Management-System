@@ -1,25 +1,25 @@
-import { Book } from "./Book";
-
-export enum ROLE {
-  MEMBER = "member",
-  LIBRARIAN = "librarian",
-}
+import { Role, UserData } from "../helpers/types";
 
 export class User {
-  private static IDcounter = 1;
-  public readonly id: number;
+  static IDcounter: number = 1;
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
 
-  private borrowedBooks: Book[];
-
-  constructor(public name: string, public email: string, public role: ROLE) {
+  constructor(data: UserData) {
     this.id = User.IDcounter++;
-    this.borrowedBooks = [];
+    this.name = data.name;
+    this.email = data.email;
+    this.role = data.role;
   }
 
-  static SetNextID(id: number) {
-    User.IDcounter = id;
+  toJSON(): UserData {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      role: this.role,
+    };
   }
-  private borrowBook() {}
-  private returnBook() {}
-  private listBorrowedBooks() {}
 }

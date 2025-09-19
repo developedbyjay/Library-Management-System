@@ -1,20 +1,20 @@
 [
   {
-    "id": "1",
+    "id": 1,
     "name": "John Doe",
     "email": "john.doe@example.com",
     "role": "librarian",
     "borrowedBooks": []
   },
   {
-    "id": "2",
+    "id": 2,
     "name": "Mary Johnson",
     "email": "mary.johnson@example.com",
     "role": "librarian",
     "borrowedBooks": []
   },
   {
-    "id": "3",
+    "id": 3,
     "name": "Alice Brown",
     "email": "alice.brown@example.com",
     "role": "member",
@@ -24,49 +24,49 @@
     ]
   },
   {
-    "id": "4",
+    "id": 4,
     "name": "David Smith",
     "email": "david.smith@example.com",
     "role": "member",
     "borrowedBooks": []
   },
   {
-    "id": "5",
+    "id": 5,
     "name": "Sophia Lee",
     "email": "sophia.lee@example.com",
     "role": "member",
     "borrowedBooks": [{ "bookId": "B107", "title": "Refactoring" }]
   },
   {
-    "id": "6",
+    "id": 6,
     "name": "Michael Green",
     "email": "michael.green@example.com",
     "role": "member",
     "borrowedBooks": []
   },
   {
-    "id": "7",
+    "id": 7,
     "name": "Olivia Adams",
     "email": "olivia.adams@example.com",
     "role": "member",
     "borrowedBooks": []
   },
   {
-    "id": "8",
+    "id": 8,
     "name": "James Carter",
     "email": "james.carter@example.com",
     "role": "member",
     "borrowedBooks": [{ "bookId": "B110", "title": "The Pragmatic Programmer" }]
   },
   {
-    "id": "9",
+    "id": 9,
     "name": "Emma White",
     "email": "emma.white@example.com",
     "role": "member",
     "borrowedBooks": []
   },
   {
-    "id": "10",
+    "id": 10,
     "name": "Daniel Scott",
     "email": "daniel.scott@example.com",
     "role": "member",

@@ -1,19 +1,47 @@
+import { BookData } from "../helpers/types";
+
 export class Book {
-  private static IDcounter = 1;
+  id: string;
+  title: string;
+  author: string;
+  isbn: string;
+  publishedYear: number;
+  totalCopies: number;
+  copiesAvailable: number;
 
-  private id: number;
-  private isAvailable: boolean;
-  private borrowedBy: string | undefined;
-  private dueDate: Date | undefined;
-
-  constructor(title: string, author: string) {
-    this.id = Book.IDcounter++;
-    this.isAvailable = true;
-    this.borrowedBy = undefined;
-    this.dueDate = undefined;
+  constructor(data: BookData) {
+    this.id = data.id;
+    this.title = data.title;
+    this.author = data.author;
+    this.isbn = data.isbn;
+    this.publishedYear = data.publishedYear;
+    this.totalCopies = data.totalCopies;
+    this.copiesAvailable = data.copiesAvailable;
   }
 
-  private markBorrowedBook() {}
+  isAvailable(): boolean {
+    return this.copiesAvailable > 0;
+  }
 
-  private markReturned() {}
+  borrowCopy(): boolean {
+    if (this.copiesAvailable <= 0) return false;
+    this.copiesAvailable -= 1;
+    return true;
+  }
+
+  returnCopy(): void {
+    if (this.copiesAvailable < this.totalCopies) this.copiesAvailable += 1;
+  }
+
+  toJSON(): BookData {
+    return {
+      id: this.id,
+      title: this.title,
+      author: this.author,
+      isbn: this.isbn,
+      publishedYear: this.publishedYear,
+      totalCopies: this.totalCopies,
+      copiesAvailable: this.copiesAvailable,
+    };
+  }
 }
