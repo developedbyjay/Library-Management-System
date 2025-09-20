@@ -8,6 +8,7 @@ export type BookData = {
   title: string;
   author: string;
   isbn: string;
+  count: number;
   publishedYear: number;
   totalCopies: number;
   copiesAvailable: number;
@@ -17,9 +18,9 @@ export type BorrowRecordData = {
   id: string;
   userId: string;
   bookId: string;
-  borrowDate: Date; 
-  dueDate: Date; 
-  returnDate: Date | undefined; 
+  borrowDate: Date;
+  dueDate: Date;
+  returnDate: Date | undefined;
 };
 
 export type UserData = {

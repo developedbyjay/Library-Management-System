@@ -42,7 +42,7 @@ export class Library {
   }
 
   addBook(
-    data: Omit<BookData, "id" | "copiesAvailable"> & { id?: string }
+    data: Omit<BookData, "id" | "copiesAvailable" | "count"> & { id?: string }
   ): Book {
     const id = data.id || generateId("BOOK");
     const book = new Book({
@@ -53,7 +53,9 @@ export class Library {
       publishedYear: data.publishedYear,
       totalCopies: data.totalCopies,
       copiesAvailable: data.totalCopies,
+      count: 0,
     });
+
     this.books.push(book);
     this.save();
     return book;
@@ -116,20 +118,22 @@ export class Library {
         message: `${book.title} is not available for borrowing`,
       };
     }
-    let currentDate = new Date();
+
     const data = {
       id: generateId("Borrow"),
       userId,
       bookId,
-      borrowDate: currentDate,
-      dueDate: new Date(currentDate.setDate(currentDate.getDate() + 5)),
+      borrowDate: new Date(),
+      dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
       returnDate: undefined,
     };
 
     const borrowed = new BorrowRecord(data);
     this.borrowHistory.push(borrowed);
     this.save();
-    return { message: `${user.name} successfully borrowed a book` } as {
+    return {
+      message: `${user.name} successfully borrowed a book ${book.title}`,
+    } as {
       message: string;
     };
   }
@@ -152,7 +156,7 @@ export class Library {
 
     if (isDue)
       return {
-        message: `The book you  borrowed on the ${borrowedHistory.borrowDate.toLocaleTimeString()} is due already and you will have to pay a fine of #500  `,
+        message: `The book you  borrowed on the ${borrowedHistory.borrowDate.toString()} is due already and you will have to pay a fine of #500  `,
       };
 
     borrowedHistory.setReturnDate();
@@ -164,10 +168,14 @@ export class Library {
     };
   }
 
-  // mostBorrowedBooks() {
-  //   const books = this.books.filter(book => book.)
-  //   return [];
-  // }
+  mostBorrowedBook(): Book {
+    const books = [...this.books].sort((a, b) => b.count - a.count);
+    return books[0];
+  }
+
+  trackOverdue(): BorrowRecord[] {
+    return this.borrowHistory.filter((b) => new Date() > new Date(b.dueDate));
+  }
 
   listAllBooks() {
     return this.books;

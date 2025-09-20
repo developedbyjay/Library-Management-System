@@ -7,6 +7,7 @@ export class Book {
   isbn: string;
   publishedYear: number;
   totalCopies: number;
+  count: number;
   copiesAvailable: number;
 
   constructor(data: BookData) {
@@ -17,6 +18,7 @@ export class Book {
     this.publishedYear = data.publishedYear;
     this.totalCopies = data.totalCopies;
     this.copiesAvailable = data.copiesAvailable;
+    this.count = data.count;
   }
 
   isAvailable(): boolean {
@@ -26,6 +28,7 @@ export class Book {
   borrowCopy(): boolean {
     if (this.copiesAvailable <= 0) return false;
     this.copiesAvailable -= 1;
+    this.count += 1;
     return true;
   }
 
@@ -42,6 +45,7 @@ export class Book {
       publishedYear: this.publishedYear,
       totalCopies: this.totalCopies,
       copiesAvailable: this.copiesAvailable,
+      count: this.count,
     };
   }
 }

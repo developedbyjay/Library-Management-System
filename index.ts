@@ -45,10 +45,10 @@ async function mainMenu(): Promise<void> {
       await handleReturn();
       break;
     case "9":
-      // printOverdue();
+      printOverdue();
       break;
     case "10":
-      // printMostBorrowed();
+      printMostBorrowed();
       break;
     case "11":
       console.log("Goodbye 👋");
@@ -126,55 +126,52 @@ async function handleReturn() {
   console.log(res.message);
 }
 
-// function printOverdue() {
-//   const overdue = library.trackOverdue();
-//   if (overdue.length === 0) {
-//     console.log("No overdue books.");
-//     return;
-//   }
-//   for (const r of overdue) {
-//     const book = library.findBook(r.bookId);
-//     const user = library.findUser(r.userId);
-//     console.log(
-//       `- ${r.id}: ${book ? book.title : r.bookId} borrowed by ${
-//         user ? user.name : r.userId
-//       } due ${r.dueDate.toDateString()}`
-//     );
-//   }
-// }
+function printOverdue() {
+  const overdue = library.trackOverdue();
+  if (overdue.length === 0) {
+    console.log("No overdue books.");
+    return;
+  }
+  for (const r of overdue) {
+    const book = library.findBook(r.bookId);
+    const user = library.findUser(r.userId);
+    console.log(
+      `- ${r.id}: ${book ? book.title : r.bookId} borrowed by ${
+        user ? user.name : r.userId
+      } due ${r.dueDate}`
+    );
+  }
+}
 
-// function printMostBorrowed() {
-//   const arr = library.mostBorrowedBooks();
-//   if (arr.length === 0) console.log("No borrow records.");
-//   for (const it of arr) {
-//     console.log(
-//       `- ${it.book.id}: ${it.book.title} (borrowed ${it.count} times)`
-//     );
-//   }
-// }
+function printMostBorrowed() {
+  const book = library.mostBorrowedBook();
+  if (!book) console.log("No borrow records.");
+
+  console.log(`- ${book.id}: ${book.title} (borrowed ${book.count} times)`);
+}
 
 // Seed some data if empty
 (function seedIfEmpty() {
   if (library.listAllBooks().length === 0 && library.listUsers().length === 0) {
-    const lib1 = library.addUser({
+    library.addUser({
       id: generateId("User"),
       name: "John Librarian",
       email: "john.librarian@example.com",
       role: Role.LIBRARIAN,
     });
-    const lib2 = library.addUser({
+    library.addUser({
       id: generateId("User"),
       name: "Mary Librarian",
       email: "mary.librarian@example.com",
       role: Role.LIBRARIAN,
     });
-    const u1 = library.addUser({
+    library.addUser({
       id: generateId("User"),
       name: "Alice Member",
       email: "alice@example.com",
       role: Role.MEMBER,
     });
-    const u2 = library.addUser({
+    library.addUser({
       id: generateId("User"),
       name: "Bob Member",
       email: "bob@example.com",
@@ -205,5 +202,4 @@ async function handleReturn() {
   }
 })();
 
-// Start CLI
 mainMenu();
