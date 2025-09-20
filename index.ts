@@ -1,8 +1,6 @@
 import { Library } from "./controllers/library";
 import { Role } from "./helpers/types";
-import { ask, printBooks, printUsers, rl } from "./helpers";
-
-
+import { ask, generateId, printBooks, printUsers, rl } from "./helpers";
 
 const library = new Library();
 
@@ -23,10 +21,10 @@ async function mainMenu(): Promise<void> {
   const choice = await ask("Choose an option: ");
   switch (choice.trim()) {
     case "1":
-        printBooks(library.listAllBooks());
+      printBooks(library.listAllBooks());
       break;
     case "2":
-        printBooks(library.listAvailableBooks());
+      printBooks(library.listAvailableBooks());
       break;
     case "3":
       await handleAddBook();
@@ -38,7 +36,7 @@ async function mainMenu(): Promise<void> {
       await handleRegisterUser();
       break;
     case "6":
-        printUsers(library.listUsers());
+      printUsers(library.listUsers());
       break;
     case "7":
       await handleBorrow();
@@ -63,10 +61,9 @@ async function mainMenu(): Promise<void> {
   mainMenu();
 }
 
-
 async function handleAddBook() {
   const userId = await ask("Enter your user id (must be librarian): ");
-  const user = library.findUser(+userId);
+  const user = library.findUser(userId);
   if (!user || user.role !== Role.LIBRARIAN) {
     console.log("Unauthorized: only librarians can add books.");
     return;
@@ -90,7 +87,7 @@ async function handleAddBook() {
 
 async function handleRemoveBook() {
   const userId = await ask("Enter your user id (must be librarian): ");
-  const user = library.findUser(+userId);
+  const user = library.findUser(userId);
   if (!user || user.role !== Role.LIBRARIAN) {
     console.log("Unauthorized: only librarians can remove books.");
     return;
@@ -107,6 +104,7 @@ async function handleRegisterUser() {
   const role =
     roleStr.trim().toLowerCase() === "librarian" ? Role.LIBRARIAN : Role.MEMBER;
   const user = library.addUser({
+    id: generateId("User"),
     name: name.trim(),
     email: email.trim(),
     role,
@@ -117,14 +115,14 @@ async function handleRegisterUser() {
 async function handleBorrow() {
   const userId = await ask("Your user id: ");
   const bookId = await ask("Book id to borrow: ");
-  const res = library.borrowBook(+userId, bookId);
+  const res = library.borrowBook(userId, bookId);
   console.log(res.message);
 }
 
 async function handleReturn() {
   const userId = await ask("Your user id: ");
   const bookId = await ask("Book id to return: ");
-  const res = library.returnBook(+userId, bookId.trim());
+  const res = library.returnBook(userId, bookId.trim());
   console.log(res.message);
 }
 
@@ -159,21 +157,25 @@ async function handleReturn() {
 (function seedIfEmpty() {
   if (library.listAllBooks().length === 0 && library.listUsers().length === 0) {
     const lib1 = library.addUser({
+      id: generateId("User"),
       name: "John Librarian",
       email: "john.librarian@example.com",
       role: Role.LIBRARIAN,
     });
     const lib2 = library.addUser({
+      id: generateId("User"),
       name: "Mary Librarian",
       email: "mary.librarian@example.com",
       role: Role.LIBRARIAN,
     });
     const u1 = library.addUser({
+      id: generateId("User"),
       name: "Alice Member",
       email: "alice@example.com",
       role: Role.MEMBER,
     });
     const u2 = library.addUser({
+      id: generateId("User"),
       name: "Bob Member",
       email: "bob@example.com",
       role: Role.MEMBER,

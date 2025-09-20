@@ -5,20 +5,25 @@ export class BorrowRecord {
   userId: string;
   bookId: string;
   borrowDate: Date;
-  dueDate: Date;
-  returnDate?: Date;
+  returnDate: Date | undefined;
+
+  private dueDate: Date = new Date();
 
   constructor(data: BorrowRecordData) {
     this.id = data.id;
     this.userId = data.userId;
     this.bookId = data.bookId;
     this.borrowDate = new Date(data.borrowDate);
-    this.dueDate = new Date(data.dueDate);
     this.returnDate = data.returnDate ? new Date(data.returnDate) : undefined;
   }
 
-  isOverdue(now = new Date()): boolean {
-    return !this.returnDate && this.dueDate.getTime() < now.getTime();
+  setReturnDate(): void {
+    this.returnDate = new Date();
+  }
+  
+  isOverdue(): boolean {
+    let currentDate = new Date();
+    return currentDate > this.dueDate;
   }
 
   toJSON(): BorrowRecordData {
@@ -26,9 +31,9 @@ export class BorrowRecord {
       id: this.id,
       userId: this.userId,
       bookId: this.bookId,
-      borrowDate: this.borrowDate.toISOString(),
-      dueDate: this.dueDate.toISOString(),
-      returnDate: this.returnDate ? this.returnDate.toISOString() : undefined,
+      borrowDate: this.borrowDate,
+      dueDate: this.dueDate,
+      returnDate: this.returnDate ? this.returnDate : undefined,
     };
   }
 }

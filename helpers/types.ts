@@ -17,13 +17,13 @@ export type BorrowRecordData = {
   id: string;
   userId: string;
   bookId: string;
-  borrowDate: string; // iso
-  dueDate: string; // iso
-  returnDate?: string; // iso
+  borrowDate: Date; 
+  dueDate: Date; 
+  returnDate: Date | undefined; 
 };
 
 export type UserData = {
-  id?: number;
+  id: string;
   name: string;
   email: string;
   role: Role;

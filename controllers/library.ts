@@ -6,7 +6,6 @@ import { User } from "../models/User";
 import { BookData, BorrowRecordData, UserData } from "../helpers/types";
 import { generateId } from "../helpers";
 
-// ---------- Library Service ----------
 export class Library {
   private books: Book[] = [];
   private users: User[] = [];
@@ -18,7 +17,6 @@ export class Library {
     this.load();
   }
 
-  // ---------- Persistence ----------
   save(): void {
     const payload = {
       books: this.books.map((b) => b.toJSON()),
@@ -38,17 +36,11 @@ export class Library {
       this.borrowHistory = (parsed.borrowHistory || []).map(
         (r: BorrowRecordData) => new BorrowRecord(r)
       );
-
-      if (this.users.length > 0) {
-        const maxId = Math.max(...this.users.map((user) => user.id));
-        User.IDcounter = maxId + 1;
-      }
     } catch (err) {
       console.error("Failed to load data:", err);
     }
   }
 
-  // ---------- Book Management ----------
   addBook(
     data: Omit<BookData, "id" | "copiesAvailable"> & { id?: string }
   ): Book {
@@ -99,7 +91,7 @@ export class Library {
     return newUser;
   }
 
-  findUser(userId: number) {
+  findUser(userId: string) {
     return this.users.find((user) => user.id === userId);
   }
 
@@ -107,7 +99,7 @@ export class Library {
     return this.books.find((b) => b.id === bookId);
   }
 
-  borrowBook(userId: number, bookId: string) {
+  borrowBook(userId: string, bookId: string) {
     const user = this.findUser(userId);
 
     if (!user) {
@@ -124,13 +116,25 @@ export class Library {
         message: `${book.title} is not available for borrowing`,
       };
     }
+    let currentDate = new Date();
+    const data = {
+      id: generateId("Borrow"),
+      userId,
+      bookId,
+      borrowDate: currentDate,
+      dueDate: new Date(currentDate.setDate(currentDate.getDate() + 5)),
+      returnDate: undefined,
+    };
+
+    const borrowed = new BorrowRecord(data);
+    this.borrowHistory.push(borrowed);
     this.save();
     return { message: `${user.name} successfully borrowed a book` } as {
       message: string;
     };
   }
 
-  returnBook(userId: number, bookId: string): { message: string } {
+  returnBook(userId: string, bookId: string): { message: string } {
     const user = this.findUser(userId);
     if (!user) {
       return { message: "No user found with that ID" };
@@ -139,9 +143,23 @@ export class Library {
     if (!book) {
       return { message: "No book found with that ID" };
     }
+    const borrowedHistory = this.borrowHistory.find(
+      (b) => b.userId === userId && b.bookId === bookId
+    );
+    if (!borrowedHistory) return { message: "You did not borrow this book" };
+
+    const isDue = borrowedHistory.isOverdue();
+
+    if (isDue)
+      return {
+        message: `The book you  borrowed on the ${borrowedHistory.borrowDate.toLocaleTimeString()} is due already and you will have to pay a fine of #500  `,
+      };
+
+    borrowedHistory.setReturnDate();
     book.returnCopy();
+
     this.save();
-    return { message: `${user.name} successfully borrowed a book` } as {
+    return { message: `${user.name} successfully returned a book` } as {
       message: string;
     };
   }
