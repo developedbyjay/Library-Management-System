@@ -107,6 +107,16 @@ export class Library {
     if (!user) {
       return { message: "No user found with that ID" };
     }
+    const isUserDefaulter = this.borrowHistory.find(
+      (b) => b.userId === userId && !b.returnDate
+    );
+
+    if (isUserDefaulter) {
+      return {
+        message: "You already borrowed a book and have not returned it",
+      };
+    }
+
     const book = this.findBook(bookId);
     if (!book) {
       return { message: "No book found with that ID" };
