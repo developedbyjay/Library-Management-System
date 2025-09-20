@@ -58,7 +58,7 @@ async function mainMenu(): Promise<void> {
       // printOverdue();
       break;
     case "10":
-      printMostBorrowed();
+      // printMostBorrowed();
       break;
     case "11":
       console.log("Goodbye 👋");
@@ -147,7 +147,6 @@ async function handleBorrow() {
   const userId = await ask("Your user id: ");
   const bookId = await ask("Book id to borrow: ");
   const res = library.borrowBook(+userId, bookId);
-  if (!res) return;
   console.log(res.message);
 }
 
@@ -175,15 +174,15 @@ async function handleReturn() {
 //   }
 // }
 
-function printMostBorrowed() {
-  const arr = library.mostBorrowedBooks(10);
-  if (arr.length === 0) console.log("No borrow records.");
-  for (const it of arr) {
-    console.log(
-      `- ${it.book.id}: ${it.book.title} (borrowed ${it.count} times)`
-    );
-  }
-}
+// function printMostBorrowed() {
+//   const arr = library.mostBorrowedBooks();
+//   if (arr.length === 0) console.log("No borrow records.");
+//   for (const it of arr) {
+//     console.log(
+//       `- ${it.book.id}: ${it.book.title} (borrowed ${it.count} times)`
+//     );
+//   }
+// }
 
 // Seed some data if empty
 (function seedIfEmpty() {

@@ -109,14 +109,13 @@ export class Library {
 
   borrowBook(userId: number, bookId: string) {
     const user = this.findUser(userId);
+
     if (!user) {
-      console.log("No user with that ID");
-      return;
+      return { message: "No user found with that ID" };
     }
     const book = this.findBook(bookId);
     if (!book) {
-      console.log("No book with that ID");
-      return;
+      return { message: "No book found with that ID" };
     }
 
     book.borrowCopy();
@@ -126,16 +125,32 @@ export class Library {
     };
   }
 
-  returnBook(userId: number, bookId: string) {
+  returnBook(userId: number, bookId: string): { message: string } {
     const user = this.findUser(userId);
     if (!user) {
-      console.log("No user with that ID");
-      return;
+      return { message: "No user found with that ID" };
     }
     const book = this.findBook(bookId);
     if (!book) {
-      console.log("No book with that ID");
-      return;
+      return { message: "No book found with that ID" };
     }
+    book.returnCopy();
+    this.save();
+    return { message: `${user.name} successfully borrowed a book` } as {
+      message: string;
+    };
+  }
+
+  mostBorrowedBooks() {
+    const books = this.books.filter(book => book.)
+    return [];
+  }
+
+  listAllBooks() {
+    return this.books
+  }
+
+  listUsers() {
+    return this.users
   }
 }
