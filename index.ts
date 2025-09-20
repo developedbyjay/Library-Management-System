@@ -1,18 +1,10 @@
-import * as readline from "readline";
 import { Library } from "./controllers/library";
-import { Book } from "./models/Book";
-import { User } from "./models/User";
 import { Role } from "./helpers/types";
+import { ask, printBooks, printUsers, rl } from "./helpers";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+
+
 const library = new Library();
-
-function ask(question: string): Promise<string> {
-  return new Promise((resolve) => rl.question(question, resolve));
-}
 
 async function mainMenu(): Promise<void> {
   console.log("\n📚 Library Management System");
@@ -31,10 +23,10 @@ async function mainMenu(): Promise<void> {
   const choice = await ask("Choose an option: ");
   switch (choice.trim()) {
     case "1":
-      //   printBooks(library.listAllBooks());
+        printBooks(library.listAllBooks());
       break;
     case "2":
-      //   printBooks(library.listAvailableBooks());
+        printBooks(library.listAvailableBooks());
       break;
     case "3":
       await handleAddBook();
@@ -46,7 +38,7 @@ async function mainMenu(): Promise<void> {
       await handleRegisterUser();
       break;
     case "6":
-      //   printUsers(library.listUsers());
+        printUsers(library.listUsers());
       break;
     case "7":
       await handleBorrow();
@@ -71,27 +63,6 @@ async function mainMenu(): Promise<void> {
   mainMenu();
 }
 
-function printBooks(books: Book[]) {
-  if (books.length === 0) {
-    console.log("No books found.");
-    return;
-  }
-  for (const b of books) {
-    console.log(
-      `- ${b.id}: ${b.title} by ${b.author} (${b.publishedYear}) [${b.copiesAvailable}/${b.totalCopies}] ISBN:${b.isbn}`
-    );
-  }
-}
-
-function printUsers(users: User[]) {
-  if (users.length === 0) {
-    console.log("No users.");
-    return;
-  }
-  for (const u of users) {
-    console.log(`- ${u.id}: ${u.name} <${u.email}> [${u.role}]`);
-  }
-}
 
 async function handleAddBook() {
   const userId = await ask("Enter your user id (must be librarian): ");
@@ -229,8 +200,6 @@ async function handleReturn() {
       publishedYear: 1999,
       totalCopies: 1,
     });
-    library.save();
-    console.log("Seeded sample data. Librarian IDs:", lib1.id, lib2.id);
   }
 })();
 

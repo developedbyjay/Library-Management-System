@@ -118,7 +118,12 @@ export class Library {
       return { message: "No book found with that ID" };
     }
 
-    book.borrowCopy();
+    const isAvailable = book.borrowCopy();
+    if (!isAvailable) {
+      return {
+        message: `${book.title} is not available for borrowing`,
+      };
+    }
     this.save();
     return { message: `${user.name} successfully borrowed a book` } as {
       message: string;
@@ -141,16 +146,20 @@ export class Library {
     };
   }
 
-  mostBorrowedBooks() {
-    const books = this.books.filter(book => book.)
-    return [];
-  }
+  // mostBorrowedBooks() {
+  //   const books = this.books.filter(book => book.)
+  //   return [];
+  // }
 
   listAllBooks() {
-    return this.books
+    return this.books;
   }
 
   listUsers() {
-    return this.users
+    return this.users;
+  }
+
+  listAvailableBooks() {
+    return this.books.filter((book) => book.isAvailable());
   }
 }
